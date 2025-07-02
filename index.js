@@ -16,15 +16,15 @@ app.use(express.json());
 
 app.post("/create-order", async (req, res) => {
   const { items, total, email } = req.body;
+  console.log("Received:", { items, total, email }); // Log incoming data
   if (!email || !email.includes("@")) {
     return res.status(400).json({ error: "A valid customer email is required." });
   }
   try {
-    // Create a Yoco payment link
     const response = await axios.post(
       "https://api.yoco.com/checkout/v1/payment_links",
       {
-        amount: total * 100, // Yoco expects cents
+        amount: total * 100,
         currency: "ZAR",
         reference: `TasselOrder-${Date.now()}`,
         customer: { email },
@@ -43,9 +43,11 @@ app.post("/create-order", async (req, res) => {
     );
     res.json({ paymentUrl: response.data.payment_link_url });
   } catch (err) {
+    console.error("Yoco error:", err.response?.data || err.message || err);
     res.status(500).json({ error: "Failed to create payment link" });
   }
 });
 
 const PORT = process.env.PORT || 3002;
+
 app.listen(PORT, () => console.log(`Payment portal running on ${PORT}`));
