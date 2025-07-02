@@ -7,7 +7,7 @@ const app = express();
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://FulloMyself.github.io"
+    "https://fullomyself.github.io"
   ],
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type"]
