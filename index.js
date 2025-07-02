@@ -16,6 +16,9 @@ app.use(express.json());
 
 app.post("/create-order", async (req, res) => {
   const { items, total, email } = req.body;
+  if (!email || !email.includes("@")) {
+    return res.status(400).json({ error: "A valid customer email is required." });
+  }
   try {
     // Create a Yoco payment link
     const response = await axios.post(
