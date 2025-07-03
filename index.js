@@ -43,8 +43,13 @@ app.post("/create-order", async (req, res) => {
     );
     res.json({ paymentUrl: response.data.payment_link_url });
   } catch (err) {
-    console.error("Yoco error:", err.response?.data || err.message || err);
-    res.status(500).json({ error: "Failed to create payment link" });
+    if (err.response) {
+      console.error("Yoco error:", err.response.data);
+      res.status(500).json({ error: err.response.data });
+    } else {
+      console.error("Yoco error:", err.message || err);
+      res.status(500).json({ error: "Failed to create payment link" });
+    }
   }
 });
 
