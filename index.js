@@ -34,13 +34,14 @@ app.post("/create-order", (req, res) => {
     email_address: email,
   };
 
-  // Create query string for signature
-  const queryString = Object.entries(data)
-    .map(([key, value]) => `${key}=${encodeURIComponent(value).replace(/%20/g, "+")}`)
-    .join("&");
+  // Create sorted query string
+const queryString = Object.keys(data)
+  .sort()
+  .map((key) => `${key}=${encodeURIComponent(data[key]).replace(/%20/g, "+")}`)
+  .join("&");
 
-  // Generate MD5 signature
-  const signature = crypto.createHash("md5").update(queryString).digest("hex");
+// Generate MD5 signature
+const signature = crypto.createHash("md5").update(queryString).digest("hex");
 
   // Return all fields + signature + PayFast URL
   res.json({
